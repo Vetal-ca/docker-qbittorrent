@@ -1,0 +1,15 @@
+.idea/
+
+
+do-not-submit
+.terraform/**
+
+# Compiled python modules.
+*.pyc
+
+# Terragrunt cache files
+.terragrunt-cache
+.terraform
+secrets.*
+
+terraform.tfstate.backup

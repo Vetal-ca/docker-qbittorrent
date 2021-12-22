@@ -1,6 +1,6 @@
 FROM  alpine:3.13 AS build
 
-ENV QBITTORRENT_TAG="release-4.3.4"
+ENV QBITTORRENT_TAG="release-4.3.9"
 RUN apk update && apk add --no-cache git gcc g++ pkgconfig qt5-qtbase-dev qt5-qtsvg-dev boost-dev \
     cmake build-base qt5-qttools-dev
 

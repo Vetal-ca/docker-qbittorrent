@@ -1,5 +1,7 @@
 FROM  alpine:3.13 AS build
 
+# https://github.com/qbittorrent/qBittorrent/wiki/Compilation:-Alpine-Linux
+
 ENV QBITTORRENT_TAG="release-4.3.9"
 RUN apk update && apk add --no-cache git gcc g++ pkgconfig qt5-qtbase-dev qt5-qtsvg-dev boost-dev \
     cmake build-base qt5-qttools-dev
@@ -22,7 +24,9 @@ RUN git clone --recurse-submodules https://github.com/qbittorrent/qBittorrent.gi
 
 FROM alpine:3.13
 
-RUN apk update && apk add --no-cache libgcc libstdc++ boost qt5-qtbase dumb-init
+ENV HOME="/home/qbittorrent"
+
+RUN apk update && apk add --no-cache libgcc libstdc++ boost qt5-qtbase dumb-init su-exec
 
 COPY --from=build /usr/local/share/man/man1/qbittorrent-nox.1 /usr/local/share/man/man1/qbittorrent-nox.1
 COPY --from=build /usr/local/lib64/libtorrent-rasterbar.so.2.0 /usr/lib/libtorrent-rasterbar.so.2.0
@@ -30,12 +34,8 @@ COPY --from=build /usr/local/bin/qbittorrent-nox /usr/local/bin/qbittorrent-nox
 
 RUN adduser -S -D -u 520 -g 520 -s /sbin/nologin qbittorrent \
     # Create symbolic links to simplify mounting
- && mkdir -p /home/qbittorrent/.config/qBittorrent \
- && mkdir -p /home/qbittorrent/.local/share/data/qBittorrent \
- && mkdir /downloads \
- && chmod go+rw -R /home/qbittorrent /downloads \
- && ln -s /home/qbittorrent/.config/qBittorrent /config \
- && ln -s /home/qbittorrent/.local/share/data/qBittorrent /torrents \
+ && mkdir -p "${HOME}/.config/qBittorrent" \
+ && mkdir -p "${HOME}/.local/share/qBittorrent" \
     # Check it works
  && su qbittorrent -s /bin/sh -c 'qbittorrent-nox -v'
 
@@ -43,9 +43,7 @@ RUN adduser -S -D -u 520 -g 520 -s /sbin/nologin qbittorrent \
 COPY qBittorrent.conf /default/qBittorrent.conf
 COPY entrypoint.sh /
 
-VOLUME ["/config", "/torrents", "/downloads"]
-
-ENV HOME=/home/qbittorrent
+VOLUME ["/home/qbittorrent"]
 
 USER qbittorrent
 

@@ -12,7 +12,7 @@ WORKDIR /tmp
 
 RUN git clone --recurse-submodules https://github.com/qbittorrent/qBittorrent.git &&\
     git clone --recurse-submodules https://github.com/arvidn/libtorrent.git &&\
-    git clone --depth 1 --single-branch --branch boost-1.73.0 --recurse-submodules https://github.com/boostorg/boost.git &&\
+    git clone --depth 1 --single-branch --branch boost-1.76.0 --recurse-submodules https://github.com/boostorg/boost.git &&\
     cd libtorrent/ && mkdir build && cd build &&\
     cmake .. &&\
     make && make install &&\

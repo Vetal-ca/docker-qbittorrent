@@ -37,4 +37,6 @@ fi
 # Allow groups to change files.
 umask u=rwx,g=rwx,o=rx
 
+ln -sf /dev/stdout "${HOME}/.local/share/qBittorrent/logs/qbittorrent.log"
+
 exec su-exec "${run_as_user}" "$@"
